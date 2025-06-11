@@ -1,81 +1,79 @@
+package med;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ElectricityBoardMain {
-    private Map<String, String> electricityMap;
 
-    public ElectricityBoardMain() {
-        this.electricityMap = new HashMap<>();
-    }
+    private Map<String, String> electricityMap = new HashMap<>();
 
+    // Getter
     public Map<String, String> getElectricityMap() {
         return electricityMap;
     }
 
+    // Setter
     public void setElectricityMap(Map<String, String> electricityMap) {
         this.electricityMap = electricityMap;
     }
 
+    // Requirement 1
     public int findCountOfConnectionsBasedOnTheConnectionType(String connectionType) {
-        if (connectionType == null || connectionType.isEmpty()) {
-            return -1;
-        }
-
         int count = 0;
         for (String type : electricityMap.values()) {
             if (type.equalsIgnoreCase(connectionType)) {
                 count++;
             }
         }
-
-        return count > 0 ? count : -1;
+        return count == 0 ? -1 : count;
     }
 
+    // Requirement 2
     public List<String> findConnectionIdsBasedOnTheConnectionType(String connectionType) {
-        if (connectionType == null || connectionType.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return electricityMap.entrySet().stream()
-                .filter(entry -> entry.getValue().equalsIgnoreCase(connectionType))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-    }
-
-    public static void main(String[] args) {
-        ElectricityBoardMain electricityBoard = new ElectricityBoardMain();
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Enter the number of connection records to be added");
-        int numRecords = Integer.parseInt(scanner.nextLine());
-
-        System.out.println("Enter the connection records (ConnectionId:Connectiontype)");
-        Map<String, String> records = new HashMap<>();
-        for (int i = 0; i < numRecords; i++) {
-            String[] parts = scanner.nextLine().split(":");
-            if (parts.length == 2) {
-                records.put(parts[0], parts[1]);
+        List<String> ids = new ArrayList<>();
+        for (Map.Entry<String, String> entry : electricityMap.entrySet()) {
+            if (entry.getValue().equalsIgnoreCase(connectionType)) {
+                ids.add(entry.getKey());
             }
         }
-        electricityBoard.setElectricityMap(records);
+        return ids;
+    }
+
+    // Main method (for user interaction - typically provided in skeleton)
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ElectricityBoardMain eb = new ElectricityBoardMain();
+        Map<String, String> map = new HashMap<>();
+
+        System.out.println("Enter the number of connection records to be added");
+        int n = Integer.parseInt(sc.nextLine());
+
+        System.out.println("Enter the connection records (ConnectionId:Connectiontype)");
+        for (int i = 0; i < n; i++) {
+            String[] input = sc.nextLine().split(":");
+            map.put(input[0], input[1]);
+        }
+        eb.setElectricityMap(map);
 
         System.out.println("Enter the Connection type to be searched");
-        String searchType = scanner.nextLine();
-        int count = electricityBoard.findCountOfConnectionsBasedOnTheConnectionType(searchType);
+        String searchType = sc.nextLine();
+        int count = eb.findCountOfConnectionsBasedOnTheConnectionType(searchType);
         if (count == -1) {
             System.out.println("No Connection Ids were found for " + searchType);
         } else {
-            System.out.println("The count of connection Ids based on " + searchType + " are " + count);
+            System.out.println("The count of connection Ids based on " + searchType.toUpperCase() + " are " + count);
         }
 
-        System.out.println("Enter the Connection type to identify the ConnectionIds");
-        String filterType = scanner.nextLine();
-        List<String> connectionIds = electricityBoard.findConnectionIdsBasedOnTheConnectionType(filterType);
-        if (connectionIds.isEmpty()) {
-            System.out.println("No Connection Ids were found for " + filterType);
+        System.out.println("Enter the Connection type to identify the Connection Ids");
+        String filterType = sc.nextLine();
+        List<String> ids = eb.findConnectionIdsBasedOnTheConnectionType(filterType);
+        if (ids.isEmpty()) {
+            System.out.println("No Connection Ids were found for the " + filterType.toLowerCase());
         } else {
-            System.out.println("Connection Ids based on the " + filterType + " are");
-            connectionIds.forEach(System.out::println);
+            System.out.println("Connection Ids based on the " + filterType.toUpperCase() + " are");
+            for (String id : ids) {
+                System.out.println(id);
+            }
         }
+
+        sc.close();
     }
 }
