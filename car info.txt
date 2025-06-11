@@ -1,4 +1,42 @@
-public class CarInfo {
+package med;
+import java.util.Scanner;
+
+public class cars {
+	public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the Car Details");
+        String input = sc.nextLine();
+
+        CarInfo car = extractDetails(input);
+
+        if (car == null) {
+            System.out.println("Invalid Details");
+            return;
+        }
+
+        System.out.println("Car Id : " + car.getCarId());
+        System.out.println("CarName:" + car.getCarName());
+        System.out.println("CarType:" + car.getCarType());
+        System.out.println("City : " + car.getCity());
+
+        String result = car.checkAvailability();
+        if (result.equals("Not Available")) {
+            System.out.println("Invalid Details");
+        } else {
+            System.out.println(result);
+        }
+    }
+
+    public static CarInfo extractDetails(String carDetails) {
+        String[] parts = carDetails.split(":");
+        if (parts.length != 4) {
+            return null;
+        }
+        return new CarInfo(parts[0], parts[1], parts[2], parts[3]);
+    }
+}
+
+class CarInfo {
     private String carId;
     private String carName;
     private String carType;
@@ -28,43 +66,57 @@ public class CarInfo {
     }
 
     public String checkAvailability() {
-        String car = "";
-        double price = 0.0;
-
         String carNameLower = carName.toLowerCase();
         String carTypeLower = carType.toLowerCase();
         String cityLower = city.toLowerCase();
 
-        // Validate car name
         if (!(carNameLower.equals("nissan") || carNameLower.equals("ford"))) {
-            return "Invalid Details";
+            return "Not Available";
         }
 
-        // Validate car type
         if (!(carTypeLower.equals("sedan") || carTypeLower.equals("suv") || carTypeLower.equals("muv"))) {
-            return "Invalid Details";
+            return "Not Available";
         }
 
-        // Validate city
-        if (!(cityLower.equals("newyork") || cityLower.equals("denver") || cityLower.equals("losangels"))) {
-            return "Invalid Details";
+        if (!(cityLower.equals("new york") || cityLower.equals("denver") || cityLower.equals("losangels"))) {
+            return "Not Available";
         }
 
-        // Fetch availability based on car name and type
+        String availableCar = "";
+        double price = 0;
+
         if (carNameLower.equals("nissan")) {
             switch (carTypeLower) {
-                case "sedan": car = "Kicks"; price = 8400.0; break;
-                case "suv": car = "Magnite"; price = 10800.0; break;
-                case "muv": car = "Terrano"; price = 14400.0; break;
+                case "sedan":
+                    availableCar = "Kicks";
+                    price = 8400.0;
+                    break;
+                case "suv":
+                    availableCar = "Magnite";
+                    price = 10800.0;
+                    break;
+                case "muv":
+                    availableCar = "Terrano";
+                    price = 14400.0;
+                    break;
             }
         } else if (carNameLower.equals("ford")) {
             switch (carTypeLower) {
-                case "sedan": car = "Figo"; price = 4802.0; break;
-                case "suv": car = "Eco Sport"; price = 9605.0; break;
-                case "muv": car = "Endeavour"; price = 21600.0; break;
+                case "sedan":
+                    availableCar = "Figo";
+                    price = 4802.0;
+                    break;
+                case "suv":
+                    availableCar = "Eco Sport";
+                    price = 9605.0;
+                    break;
+                case "muv":
+                    availableCar = "Endeavour";
+                    price = 21600.0;
+                    break;
             }
         }
 
-        return "Available car and price is: " + car + " and $" + price;
+        return "Availablecarandpriceis:" + availableCar + "and$" + price;
     }
 }
